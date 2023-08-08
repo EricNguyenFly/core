@@ -15,17 +15,18 @@ async function main() {
         console.log(` Account ${i}: ${account.address}`);
     }
 
+    const totalSupply = "1000000000000000000000000000";
     //* Loading contract factory */
-    const ArthurFactory = await ethers.getContractFactory("ArthurFactory");
+    const ERC20 = await ethers.getContractFactory("ERC20");
 
     //* Deploy contracts */
     console.log("==========================================================================");
     console.log("DEPLOYING CONTRACTS");
     console.log("==========================================================================");
 
-    const arthurFactory = await ArthurFactory.deploy(accounts[0].address);
-    await arthurFactory.deployed();
-    console.log("ArthurFactory                        deployed to:>>", arthurFactory.address);
+    const erc20 = await ERC20.deploy(totalSupply);
+    await erc20.deployed();
+    console.log("ERC20                        deployed to:>>", erc20.address);
 
     console.log("==========================================================================");
     console.log("VERIFY CONTRACTS");
@@ -33,25 +34,11 @@ async function main() {
 
     await hre
         .run("verify:verify", {
-            address: arthurFactory.address,
-            constructorArguments: [accounts[0].address]
+            contract: "contracts/test/ERC20.sol:ERC20",
+            address: erc20.address,
+            constructorArguments: [totalSupply]
         })
         .catch(console.log);
-
-    // await hre
-    //     .run("verify:verify", {
-    //         address: wXCRS.address
-    //     })
-    //     .catch(console.log);
-
-    // await hre
-    //     .run("verify:verify", {
-    //         address: lendingPool.address,
-    //         constructorArguments: [wXCR.address,
-    //         wXCRS.address
-    //         ]
-    //     })
-    //     .catch(console.log);
 
     console.log("==========================================================================");
     console.log("DONE");

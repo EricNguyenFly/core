@@ -16,16 +16,16 @@ async function main() {
     }
 
     //* Loading contract factory */
-    const ArthurFactory = await ethers.getContractFactory("ArthurFactory");
+    const WETH = await ethers.getContractFactory("WETH");
 
     //* Deploy contracts */
     console.log("==========================================================================");
     console.log("DEPLOYING CONTRACTS");
     console.log("==========================================================================");
 
-    const arthurFactory = await ArthurFactory.deploy(accounts[0].address);
-    await arthurFactory.deployed();
-    console.log("ArthurFactory                        deployed to:>>", arthurFactory.address);
+    const weth = await WETH.deploy();
+    await weth.deployed();
+    console.log("WETH                        deployed to:>>", weth.address);
 
     console.log("==========================================================================");
     console.log("VERIFY CONTRACTS");
@@ -33,25 +33,9 @@ async function main() {
 
     await hre
         .run("verify:verify", {
-            address: arthurFactory.address,
-            constructorArguments: [accounts[0].address]
+            address: weth.address
         })
         .catch(console.log);
-
-    // await hre
-    //     .run("verify:verify", {
-    //         address: wXCRS.address
-    //     })
-    //     .catch(console.log);
-
-    // await hre
-    //     .run("verify:verify", {
-    //         address: lendingPool.address,
-    //         constructorArguments: [wXCR.address,
-    //         wXCRS.address
-    //         ]
-    //     })
-    //     .catch(console.log);
 
     console.log("==========================================================================");
     console.log("DONE");

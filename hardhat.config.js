@@ -34,20 +34,34 @@ const config = {
     defaultNetwork: "hardhat",
     networks: {
         hardhat: {
-            accounts: { count: 100 },
+            accounts: { count: 10 },
             allowUnlimitedContractSize: false,
             blockGasLimit: 500e9,
         },
-        cvc_testnet: {
-            url: "https://rpc-kura.cross.technology",
+        linea_mainnet: {
+            url: `${process.env.LINEA_RPC}`,
             accounts: [process.env.SYSTEM_PRIVATE_KEY],
+        },
+        linea_testnet: {
+            url: `${process.env.LINEA_TESTNET_RPC}`,
+            accounts: [process.env.SYSTEM_TEST_PRIVATE_KEY],
         }
     },
     etherscan: {
         apiKey: {
-            mainnet: process.env.ETHER_API_KEY,
-            bsc: process.env.BINANCE_API_KEY,
+            lineaMainnet: process.env.LINEA_API_KEY,
+            lineaTestnet: process.env.LINEA_TESTNET_API_KEY,
         },
+        customChains: [
+            {
+                network: "lineaTestnet",
+                chainId: 59140,
+                urls: {
+                    apiURL: "https://api-testnet.lineascan.build/api",
+                    browserURL: `${process.env.LINEA_TESTNET_RPC}`
+                }
+            }
+        ]
     },
     solidity: {
         compilers: [
