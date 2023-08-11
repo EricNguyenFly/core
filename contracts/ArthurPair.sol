@@ -35,6 +35,7 @@ contract ArthurPair is IArthurPair, UniswapV2ERC20 {
   bool public stableSwap; // if set to true, defines pair type as stable
   bool public pairTypeImmutable; // if set to true, stableSwap states cannot be updated anymore
 
+  uint256 timeLock;
   uint private unlocked = 1;
   modifier lock() {
     require(unlocked == 1, "ArthurPair: LOCKED");
@@ -59,6 +60,7 @@ contract ArthurPair is IArthurPair, UniswapV2ERC20 {
   event FeePercentUpdated(uint16 token0FeePercent, uint16 token1FeePercent);
   event SetStableSwap(bool prevStableSwap, bool stableSwap);
   event SetPairTypeImmutable();
+  event SetPairTimeLock(uint256 oldValue, uint256 newValue);
   event Mint(address indexed sender, uint amount0, uint amount1);
   event Burn(address indexed sender, uint amount0, uint amount1, address indexed to);
   event Swap(
@@ -77,7 +79,7 @@ contract ArthurPair is IArthurPair, UniswapV2ERC20 {
   }
 
   // called once by the factory at time of deployment
-  function initialize(address _token0, address _token1) external {
+  function initialize(address _token0, address _token1, uint256 _timeLock) external {
     require(msg.sender == factory && !initialized, "ArthurPair: FORBIDDEN");
     // sufficient check
     token0 = _token0;
@@ -85,6 +87,8 @@ contract ArthurPair is IArthurPair, UniswapV2ERC20 {
 
     precisionMultiplier0 = 10 ** uint(IERC20(_token0).decimals());
     precisionMultiplier1 = 10 ** uint(IERC20(_token1).decimals());
+
+    timeLock = _timeLock;
 
     initialized = true;
   }
@@ -123,6 +127,16 @@ contract ArthurPair is IArthurPair, UniswapV2ERC20 {
 
     pairTypeImmutable = true;
     emit SetPairTypeImmutable();
+  }
+
+  function setPairTimeLock(uint256 _timeLock) external lock {
+    require(msg.sender == IArthurFactory(factory).owner(), "ArthurPair: only factory's owner");
+    require(!pairTypeImmutable, "ArthurPair: immutable");
+
+    uint256 oldValue = timeLock;
+    timeLock = _timeLock;
+
+    emit SetPairTimeLock(oldValue, timeLock);
   }
 
   // update reserves
@@ -256,6 +270,7 @@ contract ArthurPair is IArthurPair, UniswapV2ERC20 {
 
 
   function _swap(TokensData memory tokensData, address to, bytes memory data, address referrer) internal lock {
+    require(block.timestamp > timeLock, "ArthurPair: PAIR_TIME_LOCK");
     require(tokensData.amount0Out > 0 || tokensData.amount1Out > 0, "ArthurPair: INSUFFICIENT_OUTPUT_AMOUNT");
 
     (uint112 _reserve0, uint112 _reserve1, uint16 _token0FeePercent, uint16 _token1FeePercent) = getReserves();

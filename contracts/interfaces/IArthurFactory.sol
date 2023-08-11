@@ -15,7 +15,7 @@ interface IArthurFactory {
     function allPairs(uint256) external view returns (address pair);
     function allPairsLength() external view returns (uint256);
 
-    function createPair(address tokenA, address tokenB) external returns (address pair);
+    function createPair(address tokenA, address tokenB, uint256 timeLock) external returns (address pair);
 
     function setFeeTo(address) external;
     function feeInfo() external view returns (uint _ownerFeeShare, address _feeTo);

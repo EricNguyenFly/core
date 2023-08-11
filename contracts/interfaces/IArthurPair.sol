@@ -49,5 +49,5 @@ interface IArthurPair {
     function skim(address to) external;
     function sync() external;
 
-    function initialize(address, address) external;
+    function initialize(address, address, uint256) external;
 }
