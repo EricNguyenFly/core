@@ -7,7 +7,7 @@ contract UniswapV2ERC20 is IUniswapV2ERC20 {
     using SafeMath for uint;
 
     string public constant name = "Arthur LP";
-    string public constant symbol = "CMLT-LP";
+    string public constant symbol = "AT-LP";
     uint8 public constant decimals = 18;
     uint  public totalSupply;
     mapping(address => uint) public balanceOf;

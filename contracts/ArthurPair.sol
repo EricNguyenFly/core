@@ -35,7 +35,7 @@ contract ArthurPair is IArthurPair, UniswapV2ERC20 {
   bool public stableSwap; // if set to true, defines pair type as stable
   bool public pairTypeImmutable; // if set to true, stableSwap states cannot be updated anymore
 
-  uint256 timeLock;
+  uint256 public timeLock;
   uint private unlocked = 1;
   modifier lock() {
     require(unlocked == 1, "ArthurPair: LOCKED");
@@ -270,7 +270,6 @@ contract ArthurPair is IArthurPair, UniswapV2ERC20 {
 
 
   function _swap(TokensData memory tokensData, address to, bytes memory data, address referrer) internal lock {
-    require(block.timestamp > timeLock, "ArthurPair: PAIR_TIME_LOCK");
     require(tokensData.amount0Out > 0 || tokensData.amount1Out > 0, "ArthurPair: INSUFFICIENT_OUTPUT_AMOUNT");
 
     (uint112 _reserve0, uint112 _reserve1, uint16 _token0FeePercent, uint16 _token1FeePercent) = getReserves();
