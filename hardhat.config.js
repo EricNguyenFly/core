@@ -38,6 +38,10 @@ const config = {
             allowUnlimitedContractSize: false,
             blockGasLimit: 500e9,
         },
+        sepolia: {
+            url: `https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`,
+            accounts: [process.env.SYSTEM_PRIVATE_KEY],
+        },
         linea_mainnet: {
             url: `${process.env.LINEA_RPC}`,
             accounts: [process.env.SYSTEM_PRIVATE_KEY],
@@ -51,6 +55,7 @@ const config = {
         apiKey: {
             lineaMainnet: process.env.LINEA_API_KEY,
             lineaTestnet: process.env.LINEA_TESTNET_API_KEY,
+            sepolia: `${process.env.ETHERSCAN_API_KEY}`,
         },
         customChains: [
             {
