@@ -49,13 +49,18 @@ const config = {
         linea_testnet: {
             url: `${process.env.LINEA_TESTNET_RPC}`,
             accounts: [process.env.SYSTEM_TEST_PRIVATE_KEY],
-        }
+        },
+        mumbai: {
+            url: process.env.MUMBAI_RPC,
+            accounts: [process.env.SYSTEM_TEST_PRIVATE_KEY],
+        },
     },
     etherscan: {
         apiKey: {
             lineaMainnet: process.env.LINEA_API_KEY,
             lineaTestnet: process.env.LINEA_TESTNET_API_KEY,
             sepolia: `${process.env.ETHERSCAN_API_KEY}`,
+            polygonMumbai: process.env.POLYGON_API_KEY,
         },
         customChains: [
             {
