@@ -36,6 +36,7 @@ contract ArthurPair is IArthurPair, UniswapV2ERC20 {
   bool public pairTypeImmutable; // if set to true, stableSwap states cannot be updated anymore
 
   uint256 public timeLock;
+  uint256 public startTime;
   uint private unlocked = 1;
   modifier lock() {
     require(unlocked == 1, "ArthurPair: LOCKED");
@@ -61,6 +62,7 @@ contract ArthurPair is IArthurPair, UniswapV2ERC20 {
   event SetStableSwap(bool prevStableSwap, bool stableSwap);
   event SetPairTypeImmutable();
   event SetPairTimeLock(uint256 oldValue, uint256 newValue);
+  event SetPairStartTime(uint256 oldValue, uint256 newValue);
   event Mint(address indexed sender, uint amount0, uint amount1);
   event Burn(address indexed sender, uint amount0, uint amount1, address indexed to);
   event Swap(
@@ -79,7 +81,7 @@ contract ArthurPair is IArthurPair, UniswapV2ERC20 {
   }
 
   // called once by the factory at time of deployment
-  function initialize(address _token0, address _token1, uint256 _timeLock) external {
+  function initialize(address _token0, address _token1, uint256 _timeLock, uint256 _startTime) external {
     require(msg.sender == factory && !initialized, "ArthurPair: FORBIDDEN");
     // sufficient check
     token0 = _token0;
@@ -89,6 +91,7 @@ contract ArthurPair is IArthurPair, UniswapV2ERC20 {
     precisionMultiplier1 = 10 ** uint(IERC20(_token1).decimals());
 
     timeLock = _timeLock;
+    startTime = _startTime;
 
     initialized = true;
   }
@@ -137,6 +140,16 @@ contract ArthurPair is IArthurPair, UniswapV2ERC20 {
     timeLock = _timeLock;
 
     emit SetPairTimeLock(oldValue, timeLock);
+  }
+
+  function setPairStartTime(uint256 _startTime) external lock {
+    require(msg.sender == IArthurFactory(factory).owner(), "ArthurPair: only factory's owner");
+    require(!pairTypeImmutable, "ArthurPair: immutable");
+
+    uint256 oldValue = startTime;
+    startTime = _startTime;
+
+    emit SetPairStartTime(oldValue, startTime);
   }
 
   // update reserves

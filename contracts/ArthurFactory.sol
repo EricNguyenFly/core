@@ -51,7 +51,7 @@ contract ArthurFactory is IArthurFactory {
         return allPairs.length;
     }
 
-    function createPair(address tokenA, address tokenB, uint256 timeLock) external returns (address pair) {
+    function createPair(address tokenA, address tokenB, uint256 timeLock, uint256 startTime) external returns (address pair) {
         require(tokenA != tokenB, "ArthurFactory: IDENTICAL_ADDRESSES");
         (address token0, address token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
         require(token0 != address(0), "ArthurFactory: ZERO_ADDRESS");
@@ -62,7 +62,7 @@ contract ArthurFactory is IArthurFactory {
             pair := create2(0, add(bytecode, 32), mload(bytecode), salt)
         }
         require(pair != address(0), "ArthurFactory: FAILED");
-        ArthurPair(pair).initialize(token0, token1, timeLock);
+        ArthurPair(pair).initialize(token0, token1, timeLock, startTime);
         getPair[token0][token1] = pair;
         getPair[token1][token0] = pair; // populate mapping in the reverse direction
         allPairs.push(pair);
