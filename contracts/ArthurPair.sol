@@ -284,6 +284,7 @@ contract ArthurPair is IArthurPair, UniswapV2ERC20 {
 
 
   function _swap(TokensData memory tokensData, address to, bytes memory data, address referrer) internal lock {
+    require(block.timestamp >= startTime, "ArthurPair: INVALID_TIME");
     require(tokensData.amount0Out > 0 || tokensData.amount1Out > 0, "ArthurPair: INSUFFICIENT_OUTPUT_AMOUNT");
 
     (uint112 _reserve0, uint112 _reserve1, uint16 _token0FeePercent, uint16 _token1FeePercent) = getReserves();
